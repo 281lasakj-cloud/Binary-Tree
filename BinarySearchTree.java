@@ -48,14 +48,14 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
         BinaryNode<T> current = root;
 
         while(true){
-            if(element.compareTo(current.getInfo() < 0)){
+            if(element.compareTo(current.getInfo()) < 0){
                 if(current.getLeft() == null){
                     current.setLeft(newNode);
                     return;
                 }
                 current = current.getLeft();
             }
-            else if(element.comparTo(current.getInfo() > 0){
+            else if(element.compareTo(current.getInfo()) > 0){
                 if(current.getRight() == null){
                     current.setRight(newNode);
                     return;
@@ -75,17 +75,16 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
         BinaryNode<T> current = root;
 
         while(current != null){
-            if(element.compareTo(current.getInfo() == 0)){
+            if(element.compareTo(current.getInfo()) == 0){
                 return true;
             }
             else if (element.compareTo(current.getInfo()) < 0)
                 current = current.getLeft();
             else
                 current = current.getRight();
-            }
-
-            return false;
         }
+
+        return false;
     }
 
     // Returns a graphical representation of the tree
@@ -136,13 +135,37 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
     // Returns a list of elements from an inorder traversal
     public List<T> inorderTraverse()
     {
-        return null;
+        List<T> list = new ArrayList<T>();
+        inorder(root, list);
+        return list;    
+    }
+
+    private void inorder(BinaryNode<T> tree, List<T> list)
+    {
+        if (tree != null)
+        {
+            inorder(tree.getLeft(), list);
+            list.add(tree.getInfo());
+            inorder(tree.getRight(), list);
+        }
     }
 
     // Returns a list of elements from a postorder traversal
     public List<T> postorderTraverse()
     {
-        return null;
+        List<T> list = new ArrayList<T>();
+        postorder(root, list);
+        return list;    
+    }
+
+    private void postorder(BinaryNode<T> tree, List<T> list)
+    {
+        if (tree != null)
+        {
+            postorder(tree.getLeft(), list);
+            postorder(tree.getRight(), list);
+            list.add(tree.getInfo());
+        }
     }
 
     // Removes an element e from this BST such that e.compareTo(element) == 0
@@ -203,5 +226,33 @@ public class BinarySearchTree<T extends Comparable<T>> implements BSTInterface<T
     // Restructures this BST to be optimally balanced
     public void balance()
     {
+        List<T> list = inorderTraverse();
+
+        root = null;
+
+        int start = 0;
+        int end = list.size() - 1;
+
+        Queue<int[]> queue = new LinkedList<int[]>();
+
+        queue.add(new int[]{start, end});
+
+        while (!queue.isEmpty())
+        {
+            int[] range = queue.remove();
+
+            start = range[0];
+            end = range[1];
+
+            if (start <= end)
+            {  
+                int middle = (start + end) / 2;
+
+                add(list.get(middle));
+
+                queue.add(new int[]{start, middle - 1});
+                queue.add(new int[]{middle + 1, end});
+            }
+        }
     }
 }
